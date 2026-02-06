@@ -50,7 +50,7 @@ class BlaTextStyles {
 
   static TextStyle body =  TextStyle(fontSize: 16, fontWeight: FontWeight.w400);
 
-  static TextStyle label =  TextStyle(fontSize: 14, fontWeight: FontWeight.w400);
+  static TextStyle label =  TextStyle(fontSize: 13, fontWeight: FontWeight.w400);
 
   static TextStyle button =  TextStyle(fontSize: 14, fontWeight: FontWeight.w500);
 }
@@ -77,7 +77,7 @@ class BlaSpacings {
 ///
 /// Definition of App Theme.
 ///
-ThemeData blaTheme =  ThemeData(
+ThemeData appTheme =  ThemeData(
   fontFamily: 'Eesti',
   scaffoldBackgroundColor: Colors.white,
 );
