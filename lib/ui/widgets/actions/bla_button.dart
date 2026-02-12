@@ -40,9 +40,12 @@ class BlaButton extends StatelessWidget {
           ? null
           : BorderSide(
               color: enabled ? primaryColor : disableColor,
-              width: 1.5,
+              width: 1,
             ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(
+          top: Radius.circular(0),
+          bottom: Radius.circular(10),
+        )),
       minimumSize: Size( double.infinity, height),
     );
 

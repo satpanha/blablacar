@@ -170,11 +170,11 @@ class _RidePrefFormState extends State<RidePrefForm> {
                   ],
                 ),
               ),
+              BlaButton(label: 'Search', variant: BlaButtonVariant.primary, onPressed: onSubmit,)
             ],
+        // const SizedBox(height: 16),
           ),
         ),
-        const SizedBox(height: 16),
-        BlaButton(label: 'Search', variant: BlaButtonVariant.primary, onPressed: onSubmit,)
       ],
     );
   }
