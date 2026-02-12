@@ -22,7 +22,7 @@ class RidesService {
     int requestedSeat,
   ) {
     return availableRides
-        .where((s) => s.availableSeats == requestedSeat)
+        .where((s) => s.availableSeats >= requestedSeat)
         .toList();
   }
 
@@ -38,6 +38,6 @@ class RidesService {
       } else {
         return true;
       }
-    });
+    }).toList();
   }
 }
