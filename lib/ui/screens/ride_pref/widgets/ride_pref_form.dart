@@ -1,3 +1,4 @@
+import 'package:blabla/ui/screens/ride_pref/widgets/location_picker.dart';
 import 'package:blabla/ui/widgets/actions/bla_button.dart';
 import 'package:blabla/utils/date_time_util.dart';
 import 'package:flutter/material.dart';
@@ -122,8 +123,9 @@ class _RidePrefFormState extends State<RidePrefForm> {
                   icon: const Icon(Icons.swap_vert),
                   onPressed: swapLocations,
                 ),
-                onTap: () {
-                  // later you can open location picker
+                onTap: () async{
+                  final selected = await showLocationPicker(context, initial: departure);
+                  if (selected != null) setState(() => departure = selected);
                 },
               ),
 
@@ -133,8 +135,12 @@ class _RidePrefFormState extends State<RidePrefForm> {
               ListTile(
                 leading: const Icon(Icons.radio_button_unchecked),
                 title: Text(arrival?.name ?? "Arrival"),
-                onTap: () {
-                  // later you can open location picker
+                onTap: () async {
+                  final selected = await showLocationPicker(
+                    context,
+                    initial: arrival,
+                  );
+                  if (selected != null) setState(() => arrival = selected);
                 },
               ),
 
