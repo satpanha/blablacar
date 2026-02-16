@@ -73,6 +73,10 @@ class BlaSpacings {
 }
 
 
+class BlaSize {
+  static const double icon = 24;
+}
+
 
 ///
 /// Definition of App Theme.

@@ -1,4 +1,4 @@
-import 'package:blabla/ui/widgets/actions/bla_button.dart';
+import '../../widgets/actions/bla_button.dart';
 import 'package:flutter/material.dart';
 
 class BlaButtonTestScreen extends StatelessWidget {

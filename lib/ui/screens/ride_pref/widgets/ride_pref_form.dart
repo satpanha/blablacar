@@ -1,6 +1,11 @@
-import 'package:blabla/ui/screens/ride_pref/widgets/location_picker.dart';
+import 'package:blabla/ui/screens/ride_pref/widgets/ride_prefs_input.dart';
+import 'package:blabla/ui/theme/theme.dart';
 import 'package:blabla/ui/widgets/actions/bla_button.dart';
-import 'package:blabla/utils/date_time_util.dart';
+import 'package:blabla/ui/widgets/display/bla_divider.dart';
+
+import 'location_picker.dart';
+// import '../../../widgets/actions/bla_button.dart';
+import '../../../../utils/date_time_util.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../model/ride/locations.dart';
@@ -32,7 +37,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
   Location? arrival;
   late int requestedSeats;
 
-  // ----------------------------------
+  // ----------------------------------.
   // Initialize the Form attributes
   // ----------------------------------
 
@@ -54,6 +59,19 @@ class _RidePrefFormState extends State<RidePrefForm> {
   // ----------------------------------
   // Handle events
   // ----------------------------------
+  void onDeparturePressed() async {
+    final selected = await showLocationPicker(context, initial: departure);
+    if (selected != null) {
+      setState(() => departure = selected);
+    }
+  }
+
+  void onArrivalPressed() async {
+    final selected = await showLocationPicker(context, initial: arrival);
+    if (selected != null) {
+      setState(() => arrival = selected);
+    }
+  }
 
   void swapLocations() {
     setState(() {
@@ -100,6 +118,18 @@ class _RidePrefFormState extends State<RidePrefForm> {
   // Compute the widgets rendering
   // ----------------------------------
 
+  String get departureLabel =>
+      departure != null ? departure!.name : "Leaving from";
+  String get arrivalLabel => arrival != null ? arrival!.name : "Going to";
+
+  bool get showDeparturePLaceHolder => departure == null;
+  bool get showArrivalPLaceHolder => arrival == null;
+
+  String get dateLabel => DateTimeUtils.formatDateTime(departureDate);
+  String get numberLabel => requestedSeats.toString();
+
+  bool get switchVisible => arrival != null && departure != null;
+
   // ----------------------------------
   // Build the widgets
   // ----------------------------------
@@ -109,79 +139,137 @@ class _RidePrefFormState extends State<RidePrefForm> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: BlaSpacings.m),
           child: Column(
             children: [
-              // Departure
-              ListTile(
-                leading: const Icon(Icons.radio_button_unchecked),
-                title: Text(departure?.name ?? "Departure"),
-                trailing: IconButton(
-                  icon: const Icon(Icons.swap_vert),
-                  onPressed: swapLocations,
-                ),
-                onTap: () async{
-                  final selected = await showLocationPicker(context, initial: departure);
-                  if (selected != null) setState(() => departure = selected);
-                },
+              // 1 - Input the ride departure
+              RidePrefInput(
+                isPlaceHolder: showDeparturePLaceHolder,
+                title: departureLabel,
+                leftIcon: Icons.location_on,
+                onPressed: onDeparturePressed,
+                rightIcon: switchVisible ? Icons.swap_vert : null,
+                onRightIconPressed: switchVisible ? swapLocations : null,
               ),
+              const BlaDivider(),
 
-              const Divider(height: 1),
-
-              // Arrival
-              ListTile(
-                leading: const Icon(Icons.radio_button_unchecked),
-                title: Text(arrival?.name ?? "Arrival"),
-                onTap: () async {
-                  final selected = await showLocationPicker(
-                    context,
-                    initial: arrival,
-                  );
-                  if (selected != null) setState(() => arrival = selected);
-                },
+              // 2 - Input the ride arrival
+              RidePrefInput(
+                isPlaceHolder: showArrivalPLaceHolder,
+                title: arrivalLabel,
+                leftIcon: Icons.location_on,
+                onPressed: onArrivalPressed,
               ),
+              const BlaDivider(),
 
-              const Divider(height: 1),
-
-              // Date
-              ListTile(
-                leading: const Icon(Icons.calendar_today),
-                title: Text(formattedDate),
-                onTap: pickDate,
+              // 3 - Input the ride date
+              RidePrefInput(
+                title: dateLabel,
+                leftIcon: Icons.calendar_month,
+                onPressed: () => {},
               ),
+              const BlaDivider(),
 
-              const Divider(height: 1),
-
-              // Seats
-              ListTile(
-                leading: const Icon(Icons.person_outline),
-                title: const Text("Seats"),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.remove),
-                      onPressed: requestedSeats > 1
-                          ? () => setState(() => requestedSeats--)
-                          : null,
-                    ),
-                    Text("$requestedSeats"),
-                    IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () => setState(() => requestedSeats++),
-                    ),
-                  ],
-                ),
+              // 4 - Input the requested number of seats
+              RidePrefInput(
+                title: numberLabel,
+                leftIcon: Icons.person_2_outlined,
+                onPressed: () => {},
               ),
-              BlaButton(label: 'Search', variant: BlaButtonVariant.primary, onPressed: onSubmit,)
             ],
-        // const SizedBox(height: 16),
           ),
+        ),
+
+        // 5 - Launch a search
+        BlaButton(
+          label: 'Search',
+          variant: BlaButtonVariant.primary,
+          onPressed: onSubmit,
         ),
       ],
     );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Column(
+  //     mainAxisAlignment: MainAxisAlignment.start,
+  //     crossAxisAlignment: CrossAxisAlignment.stretch,
+  //     children: [
+  //       Card(
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(12),
+  //         ),
+  //         child: Column(
+  //           children: [
+  //             // Departure
+  //             ListTile(
+  //               leading: const Icon(Icons.radio_button_unchecked),
+  //               title: Text(departure?.name ?? "Departure"),
+  //               trailing: IconButton(
+  //                 icon: const Icon(Icons.swap_vert),
+  //                 onPressed: swapLocations,
+  //               ),
+  //               onTap: () async{
+  //                 final selected = await showLocationPicker(context, initial: departure);
+  //                 if (selected != null) setState(() => departure = selected);
+  //               },
+  //             ),
+
+  //             const Divider(height: 1),
+
+  //             // Arrival
+  //             ListTile(
+  //               leading: const Icon(Icons.radio_button_unchecked),
+  //               title: Text(arrival?.name ?? "Arrival"),
+  //               onTap: () async {
+  //                 final selected = await showLocationPicker(
+  //                   context,
+  //                   initial: arrival,
+  //                 );
+  //                 if (selected != null) setState(() => arrival = selected);
+  //               },
+  //             ),
+
+  //             const Divider(height: 1),
+
+  //             // Date
+  //             ListTile(
+  //               leading: const Icon(Icons.calendar_today),
+  //               title: Text(formattedDate),
+  //               onTap: pickDate,
+  //             ),
+
+  //             const Divider(height: 1),
+
+  //             // Seats
+  //             ListTile(
+  //               leading: const Icon(Icons.person_outline),
+  //               title: const Text("Seats"),
+  //               trailing: Row(
+  //                 mainAxisSize: MainAxisSize.min,
+  //                 children: [
+  //                   IconButton(
+  //                     icon: const Icon(Icons.remove),
+  //                     onPressed: requestedSeats > 1
+  //                         ? () => setState(() => requestedSeats--)
+  //                         : null,
+  //                   ),
+  //                   Text("$requestedSeats"),
+  //                   IconButton(
+  //                     icon: const Icon(Icons.add),
+  //                     onPressed: () => setState(() => requestedSeats++),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //             BlaButton(label: 'Search', variant: BlaButtonVariant.primary, onPressed: onSubmit,)
+  //           ],
+  //       // const SizedBox(height: 16),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 }

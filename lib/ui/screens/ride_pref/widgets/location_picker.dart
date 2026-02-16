@@ -1,6 +1,6 @@
-import 'package:blabla/model/ride/locations.dart';
-import 'package:blabla/services/locations_service.dart';
-import 'package:blabla/ui/theme/theme.dart';
+import '../../../../model/ride/locations.dart';
+import '../../../../services/locations_service.dart';
+import '../../../theme/theme.dart';
 import 'package:flutter/material.dart';
 
 Future<Location?> showLocationPicker(
@@ -113,7 +113,6 @@ class _LocationPickerContentState extends State<_LocationPickerContent> {
                 ),
                 itemBuilder: (context, index) {
                   final loc = _filterd[index];
-
                   return ListTile(
                     leading: Icon(
                       Icons.location_on_outlined,

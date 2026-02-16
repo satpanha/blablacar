@@ -1,4 +1,4 @@
-import 'package:blabla/ui/theme/theme.dart';
+import '../../theme/theme.dart';
 import 'package:flutter/material.dart';
 
 enum BlaButtonVariant { primary, secondary }
