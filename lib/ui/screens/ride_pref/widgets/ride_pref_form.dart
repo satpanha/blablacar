@@ -1,9 +1,10 @@
 import 'package:blabla/ui/screens/ride_pref/widgets/ride_prefs_input.dart';
+import 'package:blabla/ui/screens/ride_pref/widgets/seat_picker_screen.dart';
 import 'package:blabla/ui/theme/theme.dart';
 import 'package:blabla/ui/widgets/actions/bla_button.dart';
 import 'package:blabla/ui/widgets/display/bla_divider.dart';
 
-import 'location_picker.dart';
+import '../../../widgets/inputs/bla_location_picker.dart';
 // import '../../../widgets/actions/bla_button.dart';
 import '../../../../utils/date_time_util.dart';
 import 'package:flutter/material.dart';
@@ -114,6 +115,18 @@ class _RidePrefFormState extends State<RidePrefForm> {
     widget.onSubmit?.call(pref);
   }
 
+  void onSeatsPressed() async {
+    final result = await Navigator.push<int>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SeatPickerScreen(initialSeats: requestedSeats),
+      ),
+    );
+
+    if (result != null) {
+      setState(() => requestedSeats = result);
+    }
+  }
   // ----------------------------------
   // Compute the widgets rendering
   // ----------------------------------
@@ -175,7 +188,7 @@ class _RidePrefFormState extends State<RidePrefForm> {
               RidePrefInput(
                 title: numberLabel,
                 leftIcon: Icons.person_2_outlined,
-                onPressed: () => {},
+                onPressed: () => onSeatsPressed(),
               ),
             ],
           ),
