@@ -48,9 +48,11 @@ class BlaColors {
 class BlaTextStyles {
   static TextStyle heading = TextStyle(fontSize: 28, fontWeight: FontWeight.w500);
 
+  static TextStyle title = TextStyle(fontSize: 20, fontWeight: FontWeight.w400);
+
   static TextStyle body =  TextStyle(fontSize: 16, fontWeight: FontWeight.w400);
 
-  static TextStyle label =  TextStyle(fontSize: 13, fontWeight: FontWeight.w400);
+  static TextStyle label =  TextStyle(fontSize: 14, fontWeight: FontWeight.w400);
 
   static TextStyle button =  TextStyle(fontSize: 14, fontWeight: FontWeight.w500);
 }
@@ -77,11 +79,10 @@ class BlaSize {
   static const double icon = 24;
 }
 
-
 ///
 /// Definition of App Theme.
 ///
-ThemeData appTheme =  ThemeData(
+ThemeData blaTheme =  ThemeData(
   fontFamily: 'Eesti',
   scaffoldBackgroundColor: Colors.white,
 );
