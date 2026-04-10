@@ -1,8 +1,7 @@
 import '../../../model/ride_pref/ride_pref.dart';
-import '../../../data/repositories/location/location_repository.dart';
-import '../../../data/repositories/ride/ride_repository.dart';
 import '../../../data/repositories/ride_preference/ride_preference_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../utils/animations_util.dart';
 import '../../theme/theme.dart';
 import '../../widgets/pickers/bla_ride_preference_picker.dart';
@@ -17,16 +16,7 @@ const String blablaHomeImagePath = 'assets/images/blabla_home.png';
 /// - Or select a last entered ride preferences and launch a search on it
 ///
 class HomeScreen extends StatefulWidget {
-  final LocationRepository locationRepository;
-  final RideRepository rideRepository;
-  final RidePreferenceRepository ridePreferenceRepository;
-
-  const HomeScreen({
-    super.key,
-    required this.locationRepository,
-    required this.rideRepository,
-    required this.ridePreferenceRepository,
-  });
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -34,13 +24,15 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   void onRidePrefSelected(RidePreference selectedPreference) async {
-    // 1- Ask the service to update the current preference
-    widget.ridePreferenceRepository.saveRidePreference(selectedPreference);
+    // 1- Ask the repository to update the current preference
+    context.read<RidePreferenceRepository>().saveRidePreference(
+      selectedPreference,
+    );
 
     // 2 - Navigate to the rides screen
     await Navigator.of(
       context,
-    ).push(AnimationUtils.createBottomToTopRoute(RidesSelectionScreen()));
+    ).push(AnimationUtils.createBottomToTopRoute(const RidesSelectionScreen()));
 
     // 3 - After wait  - Update the state   - TODO Improve this with proper state managagement
     setState(() {});
@@ -77,7 +69,8 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               // 2 - THE FORM
               BlaRidePreferencePicker(
-                initRidePreference: widget.ridePreferenceRepository
+                initRidePreference: context
+                    .read<RidePreferenceRepository>()
                     .getRidePreferences()
                     .lastOrNull,
                 onRidePreferenceSelected: onRidePrefSelected,
@@ -95,7 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildHistory() {
     // Reverse the history of preferences
-    List<RidePreference> history = widget.ridePreferenceRepository
+    List<RidePreference> history = context
+        .read<RidePreferenceRepository>()
         .getRidePreferences()
         .reversed
         .toList();

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../data/repositories/ride/ride_repository.dart';
+import '../../../data/repositories/ride_preference/ride_preference_repository.dart';
+import '../../../model/ride/locations.dart';
 import '../../../model/ride/ride.dart';
 import '../../../model/ride_pref/ride_pref.dart';
-import '../../../services/ride_prefs_service.dart';
-import '../../../services/rides_service.dart';
 import '../../../utils/animations_util.dart' show AnimationUtils;
 import '../../theme/theme.dart';
 import 'widgets/ride_preference_modal.dart';
@@ -36,10 +38,28 @@ class _RidesSelectionScreenState extends State<RidesSelectionScreen> {
   }
 
   RidePreference get selectedRidePreference =>
-      RidePrefsService.selectedPreference!; // not null at this state
+      context
+          .read<RidePreferenceRepository>()
+          .getRidePreferences()
+          .lastOrNull ??
+      RidePreference(
+        departure: Location(name: 'Unknown', country: Country.france),
+        arrival: Location(name: 'Unknown', country: Country.france),
+        departureDate: DateTime.now(),
+        requestedSeats: 1,
+      );
 
-  List<Ride> get matchingRides =>
-      RidesService.getRidesFor(selectedRidePreference);
+  List<Ride> get matchingRides {
+    final rides = context.read<RideRepository>().getRides();
+    final pref = selectedRidePreference;
+    return rides
+        .where(
+          (ride) =>
+              ride.departureLocation == pref.departure &&
+              ride.arrivalLocation == pref.arrival,
+        )
+        .toList();
+  }
 
   void onPreferencePressed() async {
     // 1 - Navigate to the rides preference picker
@@ -51,8 +71,10 @@ class _RidesSelectionScreenState extends State<RidesSelectionScreen> {
         );
 
     if (newPreference != null) {
-      // 2 - Ask the service to update the current preference
-      RidePrefsService.selectPreference(newPreference);
+      // 2 - Ask the repository to save the new preference
+      context.read<RidePreferenceRepository>().saveRidePreference(
+        newPreference,
+      );
 
       // 3 -   Update the widget state  - TODO Improve this with proper state managagement
       setState(() {});
@@ -64,7 +86,10 @@ class _RidesSelectionScreenState extends State<RidesSelectionScreen> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(
-          left: BlaSpacings.m, right: BlaSpacings.m, top: BlaSpacings.s),
+          left: BlaSpacings.m,
+          right: BlaSpacings.m,
+          top: BlaSpacings.s,
+        ),
         child: Column(
           children: [
             RideSelectionHeader(
@@ -73,9 +98,9 @@ class _RidesSelectionScreenState extends State<RidesSelectionScreen> {
               onFilterPressed: onFilterPressed,
               onPreferencePressed: onPreferencePressed,
             ),
-        
+
             SizedBox(height: 100),
-        
+
             Expanded(
               child: ListView.builder(
                 itemCount: matchingRides.length,
